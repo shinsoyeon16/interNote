@@ -1,0 +1,10 @@
+
+
+create database interNote;
+use InterNote;
+
+create table member (
+id varchar(20) primary key,
+password varchar(30) not null,
+name varchar(20) not null
+);
