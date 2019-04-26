@@ -1,7 +1,6 @@
 /* 글정렬  CSS 완료
 
 할것
--팔로우 기능
 -mvc나누기
 -발표자료
 */
@@ -12,7 +11,23 @@ var bodyParser = require('body-parser')
 //var timelineRouter = require('./routes/timeline')
 var indexRouter = require('./routes/index')
 var helmet = require('helmet');
+var session = require('express-session');
+var MySQLStore = require('express-mysql-session')(session);
+var options = {
+  host     : 'localhost',
+  user     : 'root',
+  password : '1234',
+  port     : '3306',
+  database : 'internote'
+}
+var sessionStore = new MySQLStore(options);
 
+app.use(session({
+  secret: 'session_cookie_name',
+  resave: false,
+  store: sessionStore,
+  saveUninitialized: true
+}))
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
 

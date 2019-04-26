@@ -2,17 +2,10 @@ var express = require('express')
 var router = express.Router();
 var path = require('path');
 var qs = require('querystring');
-var memberDao = require('../DAO/memberDao.js');
-var mysql = require('mysql');
 var timelineRouter = require('./timeline')
+var mysql = require('mysql');
+var memberDao = require('../DAO/memberDao.js');
 var connection = mysql.createConnection(memberDao);
-var session = require('express-session');
-
-router.use(session({
-  secret: 'aaaa',
-  resave: false,
-  saveUninitialized: true
-}))
 router.use('/timeline',timelineRouter);
 
 router.get('/',function(request,response){
@@ -74,8 +67,10 @@ router.post('/login_process',function(request,response,next){
     if(data==-1) errorMsg("존재하지 않는 아이디 입니다.");
     else if(password !== dbPassword) errorMsg("비밀번호가 다릅니다.");
     else if(password == dbPassword) { //로그인 성공
-      request.session.user = {"id":id, "follows":[]};
-      response.redirect(`/timeline`);
+      request.session.user = {"id":id};
+      request.session.save(() => {
+        response.redirect(`/timeline`);
+      })
     }
   }
 
