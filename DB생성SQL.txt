@@ -10,6 +10,7 @@ name varchar(20) not null
 );
 
 /////¿öÅ©º¥Ä¡ ¹öÀü
+
 //¸â¹ö
 CREATE TABLE `member` (
   `id` varchar(20) NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE `member` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 
-//ÆÈ·Î¿ì¸â¹ö
+//ÆÈ·Î¿ì-¸â¹ö
 CREATE TABLE `follow_member` (
   `id` varchar(20) NOT NULL,
   `follow` varchar(20) NOT NULL,
@@ -26,4 +27,13 @@ CREATE TABLE `follow_member` (
   KEY `follow_idx` (`follow`),
   CONSTRAINT `follow` FOREIGN KEY (`follow`) REFERENCES `member` (`id`),
   CONSTRAINT `id` FOREIGN KEY (`id`) REFERENCES `member` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+//³ëÆ®
+CREATE TABLE `note` (
+  `id` varchar(20) NOT NULL,
+  `contents` varchar(2000) DEFAULT NULL,
+  `date` varchar(20) NOT NULL,
+  `share` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`,`date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

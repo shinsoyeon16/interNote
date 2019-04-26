@@ -83,7 +83,7 @@ module.exports = {
           <input type="hidden" name="date" value="${note[i].date}">
           <input type="submit" value="수정">&nbsp;
           </form>
-          <form action="/process/delete" method="post" style="display:inline-block;">
+          <form action="/process/remove" method="post" style="display:inline-block;">
           <input type="hidden" name="id" value="${note[i].id}">
           <input type="hidden" name="date" value="${note[i].date}">
           <input type="submit" value="X">

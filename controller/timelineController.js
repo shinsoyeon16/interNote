@@ -27,7 +27,6 @@ module.exports={
       result.forEach(x => {
         req.session.follows.list.push(x.follow)
       })
-      console.log(req.session.follows);
     }
   },
   timeline:function(req,res,next){

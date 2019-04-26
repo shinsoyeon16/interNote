@@ -6,6 +6,7 @@ var logout = require('./process/logoutController.js')
 var join = require('./process/joinController.js')
 var create = require('./process/createController.js')
 var update = require('./process/updateController.js')
+var remove = require('./process/removeController.js')
 var follow = require('./process/followController.js')
 var unfollow = require('./process/unfollowController.js')
 
@@ -23,6 +24,9 @@ router.post('/create', function(req,res,next){
 })
 router.post('/update', function(req,res,next){
   update.execute(req,res,next)
+})
+router.post('/remove', function(req,res,next){
+  remove.execute(req,res,next)
 })
 router.post('/follow', function(req,res,next){
   follow.execute(req,res,next)

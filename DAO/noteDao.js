@@ -11,7 +11,7 @@ createNote:function(note){
 updateNote:function(note){
   connection.query(`update note set contents=\'${note.contents}\', share=\'${note.share}\' where id=\'${note.id}\' and date=\'${note.date}\'`)
 },
-deleteNote:function(id, date){
+removeNote:function(id, date){
   connection.query(`delete from note where id=\'${id}\' and date=\'${date}\'`)
 }
 }
