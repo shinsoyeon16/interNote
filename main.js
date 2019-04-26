@@ -1,8 +1,7 @@
 /* 글정렬  CSS 완료
 
 할것
-
--공유기능
+-팔로우 기능
 -mvc나누기
 -발표자료
 */
@@ -16,31 +15,6 @@ var helmet = require('helmet');
 
 app.use(helmet());
 app.use(bodyParser.urlencoded({ extended: false }));
-
-app.use('*',function(request,response,next){
-  // 파일의 제목과 내용 읽은 후, request.note 에 객체로 저장하기
-  // { filename: '20190425055041-a',
-  //   note: '샬라샬라',
-  //   id: 'a',
-  //   date: 2019-05-24T20:50:41.000Z }
-  request.list = fs.readdirSync('./notes');
-  var notes = [];
-  for(var i=0; i<request.list.length;i++){
-  var note = fs.readFileSync(`notes/${request.list[i]}`, 'utf8');
-  var headerInfo = request.list[i].split('-'); // filename정보를 '-'문자 기준으로 나눈다.
-  notes = notes.concat({"filename":request.list[i], "note":note, "id":headerInfo[1],
-  "date": headerInfo[0]});
-    request.note = notes;
-  }
-  // note 객체를 내림차순으로 정렬하기
-  request.note.sort(function(a,b){
-    return b.date - a.date;
-  })
-  console.log(request.note);
-  next();
-})
-
-
 
 //app.use('/timeline',timelineRouter);
 app.use('/',indexRouter);

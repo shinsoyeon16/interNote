@@ -74,7 +74,7 @@ router.post('/login_process',function(request,response,next){
     if(data==-1) errorMsg("존재하지 않는 아이디 입니다.");
     else if(password !== dbPassword) errorMsg("비밀번호가 다릅니다.");
     else if(password == dbPassword) { //로그인 성공
-      request.session.user = { "id":id };
+      request.session.user = {"id":id, "follows":[]};
       response.redirect(`/timeline`);
     }
   }
