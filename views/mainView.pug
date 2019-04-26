@@ -1,0 +1,18 @@
+doctype html
+head
+  title InterNote
+  meta(charset='utf-8')
+h2 InterNote
+| Hello InterNote!!
+form(action='/process/login', method='post')
+  input(type='text', name='id', placeholder='ID')
+  input(type='password', name='password', placeholder='PASSWORD')
+  input(type='submit', value='로그인')
+br
+hr
+br
+form(action='/process/join', method='post')
+  input(type='text', name='id', placeholder='ID')
+  input(type='password', name='password', placeholder='PASSWORD')
+  input(type='text', name='name', placeholder='NAME')
+  input(type='submit', value='회원가입')

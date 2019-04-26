@@ -1,54 +1,39 @@
-var express = require('express') //로딩시키기
+var express = require('express')
 var router = express.Router() //express가 갖고 있는 라우터 메소드호출 라우터라는 객체를 리턴
-var template = require('../lib/template.js'); //..현재디렉터리의 부모디렉터리로 이동
-var path = require('path');
-var sanitizeHtml = require('sanitize-html');
-var fs = require('fs');
-var memberDao = require('../DAO/memberDao.js');
-var mysql = require('mysql');
-var connection = mysql.createConnection(memberDao);
+var template = require('../lib/template.js') //..현재디렉터리의 부모디렉터리로 이동
+var path = require('path')
+var sanitizeHtml = require('sanitize-html')
+var fs = require('fs')
+// var dao = require('../dao/Dao.js')
+// var mysql = require('mysql')
+// var connection = mysql.createConnection(dao)
+var noteDao = require('../dao/noteDao.js')
+var memberDao = require('../dao/memberDao.js')
 
 router.use('*',function(request,response,next){
   if(!request.session.user){
     response.send(`<script type="text/javascript">alert(\'로그인 후 이용가능합니다.\');
-    location.href='/';</script>`);
+    location.href='/';</script>`)
   } else {
-    // 파일의 제목과 내용 읽은 후, request.note 에 객체로 저장하기
-    /*
-    filename: '20190425094056-a',
-    note: 'ㅎㅎ오늘날씨 맑음',
-    id: 'a',
-    date: '20190425094056',
-    share: 'everyone'}
-    */
-    request.list = fs.readdirSync('././notes');
-    var notes = [];
-    for(var i=0; i<request.list.length;i++){
-      var note = fs.readFileSync(`notes/${request.list[i]}`, 'utf8');
-      var headerInfo = request.list[i].split('-'); // filename정보를 '-'문자 기준으로 나눈다.
-      notes = notes.concat({"filename":request.list[i], "note":note, "id":headerInfo[1],
-      "date": headerInfo[0], "share":headerInfo[2]});
-      request.note = notes;
-    }
-    // note 객체를 내림차순으로 정렬하기
-    request.note.sort(function(a,b){
-      return b.date - a.date;
-    })
-    // id 값을 사용하여 follow정보를 DB로부터 읽어들인 뒤, 세션에 follows 정보 저장
-    request.session.follows={"follows":[]};
-    connection.query(`select follow from follow_member where id=\'${request.session.user.id}\'`, function(err,rows,fields){
-      if(err) throw err;
-      else {
-        rows.forEach(data => {
-          request.session.follows.follows.push(data.follow);
-        })
-      }
-    })
-    request.session.save(() => {
-      next();
-    })
+    noteDao.load();
+
   }
 })
+//     // id 값을 사용하여 follow정보를 DB로부터 읽어들인 뒤, 세션에 follows 정보 저장
+//     request.session.follows={"follows":[]};
+//     connection.query(`select follow from follow_member where id=\'${request.session.user.id}\'`, function(err,rows,fields){
+//       if(err) throw err;
+//       else {
+//         rows.forEach(data => {
+//           request.session.follows.follows.push(data.follow);
+//         })
+//       }
+//     })
+//     request.session.save(() => {
+//       next();
+//     })
+//   }
+// })
 router.get('/', function(request,response, next){
   var body = template.body(request.note, request.session.user, request.session.follows);
   var html = template.HTML(request.session.user.id, body);

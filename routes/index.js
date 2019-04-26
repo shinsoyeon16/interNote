@@ -3,11 +3,11 @@ var router = express.Router();
 var path = require('path');
 var qs = require('querystring');
 var timelineRouter = require('./timeline')
+var dao = require('../dao/dao.js');
 var mysql = require('mysql');
-var memberDao = require('../DAO/memberDao.js');
-var connection = mysql.createConnection(memberDao);
+var connection = mysql.createConnection(dao);
+var memberDao = require('../dao/memberDao.js')
 router.use('/timeline',timelineRouter);
-
 router.get('/',function(request,response){
   if(request.session.user){
     response.redirect(`/timeline`);
@@ -45,39 +45,49 @@ router.get('/',function(request,response){
 
 router.post('/login_process',function(request,response,next){
   var post = request.body;
-  var id = post.id;
-  var password = post.password;
+  var user = {"id":post.id, "password":post.password}
+  var msg = "";
+  console.log(msg+' 0');
+  msg = memberDao.login(msg, user);
+console.log(msg+' 6');
+  if(msg=='success'){
+    request.session.user = {"id":user.id};
+    request.session.save(() => {
+      response.redirect(`/timeline`);
+  })
+}
+  response.send(`<script type="text/javascript">alert(\'${msg}\');
+     location.href='/';</script>`);
+  // function isIdValid(password, callback) {
+  //   connection.query(`select password from member where id=\'${id}\'`, function(err,rows,fields){
+  //     if(err) throw err;
+  //     else {
+  //       if(rows[0]!==undefined) callback(password, rows[0]);
+  //       else callback(password, -1);
+  //     }
+  //   })
+  // }
+  // //redirect 와 send 는 동시에 응답할 수 없기 때문에 강제주소변환을 위해 location.href 사용
+  // function errorMsg(msg){
+  //   response.send(`<script type="text/javascript">alert(\'${msg}\');
+  //   location.href='/';</script>`);
+  // }
+  // function isPasswordWrong(password, data){
+  //   var dbPassword = data.password;
+  //   if(data==-1) errorMsg("존재하지 않는 아이디 입니다.");
+  //   else if(password !== dbPassword) errorMsg("비밀번호가 다릅니다.");
+  //   else if(password == dbPassword) { //로그인 성공
+  //     request.session.user = {"id":id};
+  //     request.session.save(() => {
+  //       response.redirect(`/timeline`);
+  //     })
+  //   }
+  // }
 
-  function isIdValid(password, callback) {
-    connection.query(`select password from member where id=\'${id}\'`, function(err,rows,fields){
-      if(err) throw err;
-      else {
-        if(rows[0]!==undefined) callback(password, rows[0]);
-        else callback(password, -1);
-      }
-    })
-  }
-  //redirect 와 send 는 동시에 응답할 수 없기 때문에 강제주소변환을 위해 location.href 사용
-  function errorMsg(msg){
-    response.send(`<script type="text/javascript">alert(\'${msg}\');
-    location.href='/';</script>`);
-  }
-  function isPasswordWrong(password, data){
-    var dbPassword = data.password;
-    if(data==-1) errorMsg("존재하지 않는 아이디 입니다.");
-    else if(password !== dbPassword) errorMsg("비밀번호가 다릅니다.");
-    else if(password == dbPassword) { //로그인 성공
-      request.session.user = {"id":id};
-      request.session.save(() => {
-        response.redirect(`/timeline`);
-      })
-    }
-  }
-
-  //유효성검사
-  if(id=="" || password=="") errorMsg("모든 항목을 입력하세요.");
-  //모든칸을 입력한 경우, 아이디 중복체크 하기
-  else isIdValid(password, isPasswordWrong);
+  // //유효성검사
+  // if(id=="" || password=="") errorMsg("모든 항목을 입력하세요.");
+  // //모든칸을 입력한 경우, 아이디 중복체크 하기
+  // else isIdValid(password, isPasswordWrong);
 
   //비동기 소스 수정전
   /*  connection.connect();
