@@ -8,3 +8,22 @@ id varchar(20) primary key,
 password varchar(30) not null,
 name varchar(20) not null
 );
+
+/////¿öÅ©º¥Ä¡ ¹öÀü
+//¸â¹ö
+CREATE TABLE `member` (
+  `id` varchar(20) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+
+//ÆÈ·Î¿ì¸â¹ö
+CREATE TABLE `follow_member` (
+  `id` varchar(20) NOT NULL,
+  `follow` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`,`follow`),
+  KEY `follow_idx` (`follow`),
+  CONSTRAINT `follow` FOREIGN KEY (`follow`) REFERENCES `member` (`id`),
+  CONSTRAINT `id` FOREIGN KEY (`id`) REFERENCES `member` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
